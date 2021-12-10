@@ -9,3 +9,6 @@ typedef struct {
 int initializeFile(FILE *fp);
 int readRecord(FILE *fp, int position, PartRecord *partData);
 int writeRecord(FILE *fp, PartRecord *partData);
+
+int fileTestTwo(FILE *fp);
+int fileTestOne(FILE *fp);

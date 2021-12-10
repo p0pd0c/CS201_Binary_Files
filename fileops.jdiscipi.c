@@ -53,7 +53,7 @@ int writeRecord(FILE *fp, PartRecord *partData) {
 		// Increment count and store to file
 		*count += 1;
 		num_obs_written = fwrite(count, sizeof(int), 1, fp);
-		if(num_obs_written == 1) return 0;
+		if(num_obs_written == 1) return *count;
 		return -1;
 	}
 	return -1;
@@ -89,40 +89,22 @@ int readRecord(FILE *fp, int position, PartRecord *partData) {
 }
 
 
-
-/*
-Linux I/O Calls:
-
-FILE* fopen(const char *path, const char *mode);
-int fclose(FILE *fp);
-int fseek(FILE *stream, long offset, int whence);
-size_t fread(void *ptr, size_t size, size_t num, FILE *fp);
-size_t fwrite(void *ptr, size_t size, size_t num, FILE *fp);
-*/
 int main() {
-	const char* filename = "testFile.dat";
+	const char* filename = "testFile2.dat";
 	int fileExists = 0;
 	FILE* fp = fopen(filename, "r+"); // open for read and write, if the file already exists if (fp != NULL)
-	fileExists = 1;
-	if ( ! fileExists ) {
-	fp = fopen(filename, "w+"); // open for read and write and create the file if (fp == NULL) {
-		printf("cannot open file '%s'\n", filename);
-		return 8; 
+	if(fp != NULL) {
+		fileExists = 1;
+	}
+	if(!fileExists) {
+		fp = fopen(filename, "w+"); // open for read and write and create the file 
+		if (fp == NULL) {
+			printf("cannot open file '%s'\n", filename);
+			return 8; 
+		}
 	}
 	
-	int return_code = initializeFile(fp);
-	printf("Init File: %d\n", return_code);
-
-	PartRecord pr = { .partNumber = 115, .partName = "Pillow", .quantity = 11 };
-	return_code = writeRecord(fp, &pr);
-	printf("Write record: %d\n", return_code);
-
-	PartRecord* retrieved = (PartRecord*) malloc(sizeof(PartRecord));
-	return_code = readRecord(fp, 1, retrieved);
-	printf("Read record: %d\n", return_code);
-	if(return_code == 0) {
-		printf("Part number: %d, Part name: %s, Quantity: %d\n", retrieved->partNumber, retrieved->partName, retrieved->quantity);
-	}
+	fileTestOne(fp);
 
 	return 0;
 }
